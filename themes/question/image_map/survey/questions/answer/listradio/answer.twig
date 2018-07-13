@@ -1,0 +1,22 @@
+{#
+/**
+ * Multiple Choice question item Html
+ *
+ * @var $sRows      : the rows, generated with the views rows/answer_row*.twig
+ *
+ * @var $name
+ * @var $anscount
+ */
+#}
+<!-- Multiple Choice -->
+
+<!-- answer -->
+{# What is the usage of this input ? #}
+<input type="hidden" name="MULTI{{ name }}" value="{{ anscount }}" />
+<img src="{{question_template_attribute.image_url}}" usemap="#map{{name}}"/>
+<div class="{{ coreClass }} row image-map" role="group" aria-labelledby="ls-question-text-{{ basename }}">
+	<map name="map{{name}}">
+    {{ sRows }}
+	</map>
+<!-- end of answer -->
+</div>

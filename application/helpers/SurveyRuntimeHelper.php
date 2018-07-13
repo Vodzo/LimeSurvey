@@ -119,7 +119,7 @@ class SurveyRuntimeHelper
         $this->setGroup();
 
         $this->fixMaxStep();
-
+		
         //******************************************************************************************************
         //PRESENT SURVEY
         //******************************************************************************************************
@@ -129,7 +129,27 @@ class SurveyRuntimeHelper
         Yii::app()->loadHelper('qanda');
         setNoAnswerMode($this->aSurveyInfo);
 
-        //Iterate through the questions about to be displayed:
+		/**
+		 * set survey start time
+		 */
+		$timerKey = $surveyid;
+		if(empty($_SESSION['timers'][$timerKey]) && $this->aMoveResult['seq'] === 0) {
+			$_SESSION['timers'][$timerKey] = time();
+		}
+		
+		$this->aSurveyInfo['Timer'] = [
+			'start' => $_SESSION['timers'][$timerKey],
+			'end' => $_SESSION['timers'][$timerKey] + ((
+				(int) trim($timerSettings = PluginSetting::model()->findByAttributes(array(
+					'plugin_id'	=> Plugin::model()->findByAttributes(array('name'	=> 'Timer'))->id,
+					'model_id'	=> $surveyid,
+					'key'		=> 'sTimerDuration'
+				))->value, '"')
+			)*60),
+			'current' => time(),
+		];
+		
+		//Iterate through the questions about to be displayed:
         $inputnames = array();
         $vpopup     = $fpopup = false;
         $upload_file = null;

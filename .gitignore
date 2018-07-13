@@ -60,6 +60,7 @@
 !/plugins/index.html
 !/plugins/Demo/
 !/plugins/AuditLog/
+!/plugins/Timer/
 
 #ignore old styles
 /styles/

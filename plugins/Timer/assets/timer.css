@@ -1,0 +1,12 @@
+.timer {
+    display: block;
+    position: fixed;
+    margin-left: -93px;
+    color: #0e850e;
+    font-size: 2rem;
+    background: #c3ffce;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #00ff0036;
+    box-shadow: 2px 2px 2px #00240538;
+}
