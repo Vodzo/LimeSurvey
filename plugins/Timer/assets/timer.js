@@ -1,7 +1,5 @@
 $(document).ready(function() {
     (function() {
-		console.log(window.Timer);
-		console.log('wasdads');
         if( window.Timer ) {
              function startTimer(duration) {
                 var timer = duration, minutes, seconds;
@@ -28,7 +26,9 @@ $(document).ready(function() {
         }
         
         $(window).on('timer:tick', function(event, data) {
-            $('.timer').html(data.display);
+			if(data.timer > 0) {
+				$('.timer').html(data.display);
+			}
         });
         $(window).on('timer:done', function(event, data) {
             $('#ls-button-submit').val('movesubmit').click();

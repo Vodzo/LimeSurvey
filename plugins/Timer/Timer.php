@@ -1,5 +1,5 @@
 <?php
-
+ 
 Class Timer extends PluginBase
 {
 
@@ -73,6 +73,9 @@ Class Timer extends PluginBase
 		
 		$assetsUrl = Yii::app()->assetManager->publish(dirname(__FILE__) . '/assets');
         App()->clientScript->registerScriptFile("$assetsUrl/timer.js");
+		
+		$assetsUrl = Yii::app()->assetManager->publish(dirname(__FILE__) . '/assets');
+        App()->clientScript->registerScriptFile("$assetsUrl/imagemapster.js");
 	}
 
 
