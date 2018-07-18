@@ -32,42 +32,4 @@ question_template_attribute.keep_aspect         : {{question_template_attribute.
 question_template_attribute.crop_or_resize      : {{question_template_attribute.crop_or_resize}}<br/>
 question_template_attribute.horizontal_scroll   : {{question_template_attribute.horizontal_scroll}}<br/>
 </p>#}
-
-<!-- answer_row -->
 <area href="#" coords="{{answer | split('#')[1]}}" shape="{{answer | split('#')[0]}}" />
-{#<li id='javatbd{{ myfname }}' class='question-item answer-item checkbox-item imageselect-listitem {{ extra_class }}' {{ sDisplayStyle }} >
-    <div class="imageselect-container">
-        <input
-            class="imageselect-checkbox"
-            type="checkbox"
-            name="{{ name }}{{ title }}"
-            id="answer{{ name}}{{ title }}"
-            value="Y"
-            {{ checkedState }}
-            onclick='cancelBubbleThis(event); {{ sCheckconditionFunction }}'
-        />
-        <label for="answer{{ name }}{{ title }}" class="imageselect-label" onclick='cancelBubbleThis(event); {{ sCheckconditionFunction }}'>
-
-         <img class="unforce-height" src="{{ question }}" 
-         style="{%if question_template_attribute.fix_width > 1%} 
-            width: {{question_template_attribute.fix_width}}px 
-            {% endif %} {%if question_template_attribute.fix_height > 1%}
-            height: {{question_template_attribute.fix_height}}px
-            {% endif %}"/>
-        </label>
-    </div>
-    <input
-        type="hidden"
-        name="java{{ myfname }}"
-        id="java{{ myfname }}"
-        value="{{ sValue }}"
-    />
-</li>
-<script>
-    var imageselectjs_{{name}} = new IMAGESELECT("{{ name}}{{ title }}", {
-        keepAspect: {{question_template_attribute.keep_aspect ? 'true' : 'false'}}, 
-        horizontalScroll: {{question_template_attribute.horizontal_scroll ? 'true' : 'false'}},
-        crop_or_resize: {{question_template_attribute.crop_or_resize ? true : false}}
-        }); 
-</script>#}
-<!-- end of answer_row -->
