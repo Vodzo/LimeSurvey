@@ -133,8 +133,8 @@ class SurveyRuntimeHelper
 		 * set survey start time
 		 */
 		$timerKey = $surveyid;
-		if(empty($_SESSION['timers'][$timerKey]) && $this->aMoveResult['seq'] === 0) {
-			$_SESSION['timers'][$timerKey] = time();
+		if(empty($_SESSION['survey_'.$surveyid]['timers'][$timerKey]) && $this->aMoveResult['seq'] === 0) {
+			$_SESSION['survey_'.$surveyid]['timers'][$timerKey] = time();
 		}
 		
 		$timerSettings = PluginSetting::model()->findByAttributes(array(
@@ -145,8 +145,8 @@ class SurveyRuntimeHelper
 		
 		if ($timerSettings) {
 			$this->aSurveyInfo['Timer'] = Yii::app()->twigRenderer->renderViewFromFile("/plugins/Timer/assets/timer.twig", [
-				'start' => $_SESSION['timers'][$timerKey],
-				'end' => $_SESSION['timers'][$timerKey] + ((
+				'start' => $_SESSION['survey_'.$surveyid]['timers'][$timerKey],
+				'end' => $_SESSION['survey_'.$surveyid]['timers'][$timerKey] + ((
 					(int) trim($timerSettings = PluginSetting::model()->findByAttributes(array(
 						'plugin_id'	=> Plugin::model()->findByAttributes(array('name'	=> 'Timer'))->id,
 						'model_id'	=> $surveyid,
