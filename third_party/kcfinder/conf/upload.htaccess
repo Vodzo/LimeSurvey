@@ -7,9 +7,6 @@
 <IfModule mod_php6.c>
   php_flag engine Off
 </IfModule>
-<IfModule mod_php7.c>
-  php_flag engine Off
-</IfModule>
 <IfModule mod_cgi.c>
   Options -ExecCGI
 </IfModule>

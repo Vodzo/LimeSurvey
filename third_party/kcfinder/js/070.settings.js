@@ -50,7 +50,9 @@ _.initSettings = function() {
     if (!$.$.kuki.isSet('orderDesc'))
         $.$.kuki.set('orderDesc', "off");
 
-    $('#order input[value="' + $.$.kuki.get('order') + '"]').get(0).checked = true;
+    if($('#order input[value="' + $.$.kuki.get('order') + '"]').get(0)) {
+		$('#order input[value="' + $.$.kuki.get('order') + '"]').get(0).checked = true;
+	}
     $('#order input[name="desc"]').get(0).checked = ($.$.kuki.get('orderDesc') == "on");
 
     $('#order input[type="radio"]').click(function() {
@@ -69,7 +71,9 @@ _.initSettings = function() {
     if ($.$.kuki.get('view') == "list")
         $('#show').parent().hide();
 
-    $('#view input[value="' + $.$.kuki.get('view') + '"]').get(0).checked = true;
+	if($('#view input[value="' + $.$.kuki.get('view') + '"]').get(0)) {
+		$('#view input[value="' + $.$.kuki.get('view') + '"]').get(0).checked = true;
+	}
 
     $('#view input').click(function() {
         var view = this.value;

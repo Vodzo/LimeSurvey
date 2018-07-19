@@ -16,7 +16,6 @@
     <div id="folders"></div>
 </div>
 
-
 <div id="right">
 
     <div id="toolbar">

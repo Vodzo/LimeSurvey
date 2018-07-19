@@ -96,8 +96,6 @@ class uploader {
 
     public function __construct() {
 
-        // crsf_session
-
         // SET CMS INTEGRATION PROPERTY
         if (isset($_GET['cms']) &&
             $this->checkFilename($_GET['cms']) &&
@@ -220,18 +218,18 @@ class uploader {
             list($unused, $protocol, $domain, $unused, $port, $path) = $patt;
             $path = path::normalize($path);
             $this->config['uploadURL'] = "$protocol://$domain" . (strlen($port) ? ":$port" : "") . "/$path";
-            $this->config['uploadDir'] = $this->realpath(strlen($this->config['uploadDir'])
+            $this->config['uploadDir'] = strlen($this->config['uploadDir'])
                 ? path::normalize($this->config['uploadDir'])
-                : path::url2fullPath("/$path"));
-            $this->typeDir = $this->realpath("{$this->config['uploadDir']}/{$this->type}");
+                : path::url2fullPath("/$path");
+            $this->typeDir = "{$this->config['uploadDir']}/{$this->type}";
             $this->typeURL = "{$this->config['uploadURL']}/{$this->type}";
 
         // SITE ROOT
         } elseif ($this->config['uploadURL'] == "/") {
-            $this->config['uploadDir'] = $this->realpath(strlen($this->config['uploadDir'])
+            $this->config['uploadDir'] = strlen($this->config['uploadDir'])
                 ? path::normalize($this->config['uploadDir'])
-                : path::normalize($_SERVER['DOCUMENT_ROOT']));
-            $this->typeDir = $this->realpath("{$this->config['uploadDir']}/{$this->type}");
+                : path::normalize($_SERVER['DOCUMENT_ROOT']);
+            $this->typeDir = "{$this->config['uploadDir']}/{$this->type}";
             $this->typeURL = "/{$this->type}";
 
         // ABSOLUTE & RELATIVE
@@ -239,10 +237,10 @@ class uploader {
             $this->config['uploadURL'] = (substr($this->config['uploadURL'], 0, 1) === "/")
                 ? path::normalize($this->config['uploadURL'])
                 : path::rel2abs_url($this->config['uploadURL']);
-            $this->config['uploadDir'] = $this->realpath(strlen($this->config['uploadDir'])
+            $this->config['uploadDir'] = strlen($this->config['uploadDir'])
                 ? path::normalize($this->config['uploadDir'])
-                : path::url2fullPath($this->config['uploadURL']));
-            $this->typeDir = $this->realpath("{$this->config['uploadDir']}/{$this->type}");
+                : path::url2fullPath($this->config['uploadURL']);
+            $this->typeDir = "{$this->config['uploadDir']}/{$this->type}";
             $this->typeURL = "{$this->config['uploadURL']}/{$this->type}";
         }
 
@@ -279,7 +277,9 @@ class uploader {
             }
         $this->localize($this->lang);
 
-        if (!$this->config['disabled']) { // IF BROWSER IS ENABLED
+        // IF BROWSER IS ENABLED
+        if (!$this->config['disabled']) {
+
             // TRY TO CREATE UPLOAD DIRECTORY IF NOT EXISTS
             if (!$this->config['disabled'] && !is_dir($this->config['uploadDir']))
                 @mkdir($this->config['uploadDir'], $this->config['dirPerms']);
@@ -310,27 +310,12 @@ class uploader {
         }
     }
 
-    protected function realpath($path) {
-        // PHP's realpath() does not work on files that don't exist, but
-        // there might be a symlink somewhere in the path so we need to
-        // check it.
-        $existing_path = $path;
-        while (!file_exists($existing_path)) {
-            $existing_path = dirname($existing_path);
-        }
-        $rPath = realpath($existing_path) . substr($path, strlen($existing_path));
-        if (strtoupper(substr(PHP_OS, 0, 3)) == "WIN")
-            $rPath = str_replace("\\", "/", $rPath);
-        return $rPath;
-    }
-
     public function upload() {
         $config = &$this->config;
         $file = &$this->file;
         $url = $message = "";
-        if($crsfControl=$this->controlCSRFToken()){
-            $message= $crsfControl;
-        } elseif ($config['disabled'] || !$config['access']['files']['upload']) {
+
+        if ($config['disabled'] || !$config['access']['files']['upload']) {
             if (isset($file['tmp_name'])) @unlink($file['tmp_name']);
             $message = $this->label("You don't have permissions to upload files.");
 
@@ -419,7 +404,9 @@ class uploader {
     }
 
     protected function checkFilePath($file) {
-        $rPath = $this->realpath($file);
+        $rPath = realpath($file);
+        if (strtoupper(substr(PHP_OS, 0, 3)) == "WIN")
+            $rPath = str_replace("\\", "/", $rPath);
         return (substr($rPath, 0, strlen($this->typeDir)) === $this->typeDir);
     }
 
@@ -824,43 +811,6 @@ if (window.opener) window.close();
 
     protected function get_htaccess() {
         return file_get_contents("conf/upload.htaccess");
-    }
-    protected function controlCSRFToken()
-    {
-        if (isset($_SERVER['REQUEST_METHOD']) && !strcasecmp($_SERVER['REQUEST_METHOD'],'POST'))
-        {
-            if (!isset($_POST['kcfinder_csrftoken']) || (isset($_POST['kcfinder_csrftoken']) && $_POST['kcfinder_csrftoken']!=$this->session['kcfinder_csrf_token']))
-            {
-                return "CSRF upload error";
-            }
-        }
-        return;
-    }   
-    // Set the session kcfinder_csrf_token to a token and return this token
-    protected function getCSRFToken() {
-        if (function_exists("hash_algos") and in_array("sha512",hash_algos()))
-        {
-            $token=hash("sha512",mt_rand(0,mt_getrandmax()));
-        }
-        else
-        {
-            $token=' ';
-            for ($i=0;$i<128;++$i)
-            {
-                $r=mt_rand(0,35);
-                if ($r<26)
-                {
-                    $c=chr(ord('a')+$r);
-                }
-                else
-                { 
-                    $c=chr(ord('0')+$r-26);
-                } 
-                $token.=$c;
-            }
-        }
-        $this->session['kcfinder_csrf_token']=$token;
-        return $token;
     }
 }
 

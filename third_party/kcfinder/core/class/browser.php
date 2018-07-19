@@ -96,17 +96,7 @@ class browser extends uploader {
                 die(json_encode(array('error' => $message)));
             }
         }
-        if($crsfControl=$this->controlCSRFToken())
-        {
-            if (in_array($act, array("browser", "upload")) ||
-                (substr($act, 0, 8) == "download")
-            )
-                $this->backMsg($crsfControl);
-            else {
-                header("Content-Type: text/plain; charset={$this->charset}");
-                die(json_encode(array('error' => $crsfControl)));
-            }
-        }
+
         if (!isset($this->session['dir']))
             $this->session['dir'] = $this->type;
         else {
@@ -206,7 +196,7 @@ class browser extends uploader {
 
     protected function act_chDir() {
         $this->postDir(); // Just for existing check
-        $this->session['dir'] = "{$this->type}/" . ( isset($_POST['dir']) ? $_POST['dir'] : "" );
+        $this->session['dir'] = "{$this->type}/{$_POST['dir']}";
         $dirWritable = dir::isWritable("{$this->config['uploadDir']}/{$this->session['dir']}");
         return json_encode(array(
             'files' => $this->getFiles($this->session['dir']),
@@ -831,7 +821,6 @@ class browser extends uploader {
 
     protected function postDir($existent=true) {
         $dir = $this->typeDir;
-
         if (isset($_POST['dir']))
             $dir .= "/" . $_POST['dir'];
         if (!$this->checkFilePath($dir))
@@ -901,7 +890,13 @@ class browser extends uploader {
 
         if (file_exists("tpl/tpl_$template.php")) {
             ob_start();
-            require "tpl/tpl_$template.php";
+            $eval = "unset(\$data);unset(\$template);unset(\$eval);";
+            $_ = $data;
+            foreach (array_keys($data) as $key)
+                if (preg_match('/^[a-z\d_]+$/i', $key))
+                    $eval .= "\$$key=\$_['$key'];";
+            $eval .= "unset(\$_);require \"tpl/tpl_$template.php\";";
+            eval($eval);
             return ob_get_clean();
         }
 
