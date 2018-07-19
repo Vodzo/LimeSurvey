@@ -12,16 +12,32 @@
 
 <!-- answer -->
 {# What is the usage of this input ? #}
-<input type="hidden" name="MULTI{{ name }}" value="{{ anscount }}" />
-<img src="{{question_template_attribute.image_url}}" usemap="#map{{name}}" id="map{{name}}" />
+<input type="hidden" name="{{ name }}" value="{{value}}" id="{{name}}" />
+<div class="centerer">
+	<div class="inliner">
+		<img src="{{question_template_attribute.image_url}}" usemap="#map{{name}}" id="map{{name}}" />
+	</div>
+</div>
 <div class="{{ coreClass }} row image-map" role="group" aria-labelledby="ls-question-text-{{ basename }}">
 	<map name="map{{name}}">
-    {{ sRows }}
+		{{ sRows }}
 	</map>
-<!-- end of answer -->
-<script>
-	$('#map{{name}}').mapster({
-		singleSelect: true
-	});
-</script>
+	<!-- end of answer -->
+	<script>
+		$('#map{{name}}').mapster({
+			singleSelect: true,
+			fillColor: '00ff00',
+			fillOpacity: 0.3,
+			stroke: true,
+			render_highlight: {
+				strokeWidth: 1
+			},
+			strokeColor: '000000',
+			onClick: function(event) {
+				var data = $(event.e.target).data();
+				var code = data.code;
+				$('#{{name}}').val(code);
+			}
+		});
+	</script>
 </div>
