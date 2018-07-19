@@ -39,5 +39,8 @@
 				$('#{{name}}').val(code);
 			}
 		});
+		if($('#{{name}}').val()) {
+			$('area[data-code="' + $('#{{name}}').val() + '"]').mapster('select');
+		}
 	</script>
 </div>
