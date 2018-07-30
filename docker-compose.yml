@@ -9,4 +9,28 @@ services:
       - .:/var/www/html
     ports:
       - 80
+    networks: 
+      - limesurvey
+    depends_on:
+      - mysql
+
+  mysql:
+    hostname: "ls_mysql"
+    image: mysql:5
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - limesurvey
+    environment:
+      MYSQL_ROOT_PASSWORD: limesurvey
+      MYSQL_DATABASE: limesurvey
+      MYSQL_USER: limesurvey
+      MYSQL_PASSWORD: limesurvey
+
+volumes:
+  mysql: 
+
+networks:
+  limesurvey:
+    driver: overlay
 

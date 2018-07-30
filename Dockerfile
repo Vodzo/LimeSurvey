@@ -5,4 +5,6 @@ RUN docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/
 RUN docker-php-ext-install gd pdo_mysql pdo imap zip ldap mysqli mbstring
 RUN pecl install imagick-3.4.3
 RUN docker-php-ext-enable imagick
+COPY . /var/www/html
+RUN chown www-data.www-data -R /var/www/html
 EXPOSE 80
