@@ -9,4 +9,6 @@ COPY . /var/www/html
 RUN mkdir /var/www/html/upload/themes/survey
 RUN mkdir /var/www/html/upload/surveys
 RUN chown www-data.www-data -R /var/www/html
+RUN echo "upload_max_filesize = 4096M" > /usr/local/etc/php/php.ini
+RUN echo "post_max_size = 4096M" >> /usr/local/etc/php/php.ini
 EXPOSE 80
