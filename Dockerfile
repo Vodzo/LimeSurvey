@@ -7,5 +7,6 @@ RUN pecl install imagick-3.4.3
 RUN docker-php-ext-enable imagick
 COPY . /var/www/html
 RUN mkdir /var/www/html/upload/themes/survey
+RUN mkdir /var/www/html/upload/surveys
 RUN chown www-data.www-data -R /var/www/html
 EXPOSE 80
