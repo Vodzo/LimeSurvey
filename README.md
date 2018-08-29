@@ -1,4 +1,7 @@
 ![LimeSurvey Logo](https://www.limesurvey.org/images/logos/logo_main.png)
+
+#THIS IS A CUSTOM FORK WITH CUSTOM FUNCIONALITY. [USE ORIGINAL REPO](https://github.com/LimeSurvey/LimeSurvey)
+
 # Sophisticated online survey software
 [![Build Status](https://travis-ci.org/LimeSurvey/LimeSurvey.svg?branch=master)](https://travis-ci.org/LimeSurvey/LimeSurvey/)
 
