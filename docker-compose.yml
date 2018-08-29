@@ -11,6 +11,9 @@ services:
       - limesurvey
     depends_on:
       - mysql
+    volumes:
+      - tmp:/var/www/html/tmp
+      - upload:/var/www/html/upload
 
   mysql:
     hostname: "ls_mysql"
@@ -26,7 +29,9 @@ services:
       MYSQL_PASSWORD: limesurvey
 
 volumes:
-  mysql: 
+  mysql:
+  tmp:
+  upload:
 
 networks:
   limesurvey:
