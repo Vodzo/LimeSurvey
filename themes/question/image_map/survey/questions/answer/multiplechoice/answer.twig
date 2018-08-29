@@ -39,7 +39,7 @@
 		{% endfor %}
 	</map>
 	{% for aRow in aRows %}
-		<input type="checkbox" name="{{ aRow.name }}{{ aRow.title }}" id="answer{{ aRow.name}}{{ aRow.title }}" value="Y" {{ aRow.checkedState }} style="display:none;" />
+		<input type="checkbox" name="{{ aRow.name }}{{ aRow.title }}" id="answer{{ aRow.name}}{{ aRow.title }}" value="Y" {{ aRow.checkedState }} style="display:none;" data-question-id="{{name}}" />
     {% endfor %}
 	<!-- end of answer -->
 	<script>
@@ -55,12 +55,19 @@
 			onClick: function(event) {
 				var data = $(event.e.target).data();
 				var code = data.code;
-				console.log(code);
+				console.log($('#' + code));
 				$('#' + code).prop('checked', event.selected);;
 			}
 		});
+		$('[data-question-id="{{name}}"]').each(function(i,e) {
+			if($(e).is(':checked')) {
+				$('area[data-code="' + $(e).attr('id') + '"]').mapster('select');
+			}
+		});
+		{#
+		
 		if($('#{{name}}').val()) {
 			$('area[data-code="' + $('#{{name}}').val() + '"]').mapster('select');
-		}
+		}#}
 	</script>
 </div>

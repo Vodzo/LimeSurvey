@@ -34,5 +34,5 @@ question_template_attribute.horizontal_scroll   : {{question_template_attribute.
 </p>#}
 
 <!-- answer_row -->
-<area href="#" coords="{{aRow.question | split('#')[1]}}" shape="{{aRow.question | split('#')[0]}}" data-code="{{aRow.name}}"/>
+<area href="#" coords="{{aRow.question | split('#')[1]}}" shape="{{aRow.question | split('#')[0]}}" data-code="answer{{ aRow.name}}{{ aRow.title }}"/>
 <!-- end of answer_row -->
