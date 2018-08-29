@@ -1,0 +1,66 @@
+{#
+/**
+ * Multiple Choice question item Html
+ *
+ * @var $sRows      : the rows, generated with the views rows/answer_row*.twig
+ *
+ * @var $name
+ * @var $anscount
+ */
+#}
+<!-- Multiple Choice -->
+
+<!-- answer -->
+{# What is the usage of this input ? #}
+<input type="hidden" name="MULTI{{ name }}" value="{{ anscount }}" />
+{#<div class="{{ coreClass }} row" role="group" aria-labelledby="ls-question-text-{{ basename }}">
+    {% for aRow in aRows %}
+        {% if loop.index0 is divisible by(iMaxRowsByColumn) and loop.index0 != 0  %}
+            </ul>
+            <ul class="list-unstyled col-xs-12 col-sm-{{iColumnWidth}}">
+        {% endif %}
+
+        {% set rowTemplate = aRow.other ? './survey/questions/answer/multiplechoice/rows/answer_row_other.twig' : './survey/questions/answer/multiplechoice/rows/answer_row.twig' %}
+        {% include rowTemplate with aRow only %}
+
+    {% endfor %}
+<!-- end of answer -->
+</div>#}
+
+<div class="centerer">
+	<div class="inliner">
+		<img src="{{question_template_attribute.image_url}}" usemap="#map{{name}}" id="map{{name}}" />
+	</div>
+</div>
+<div class="{{ coreClass }} row image-map" role="group" aria-labelledby="ls-question-text-{{ basename }}">
+	<map name="map{{name}}">
+		{% for aRow in aRows %}
+			{% include './survey/questions/answer/multiplechoice/rows/answer_row.twig' %}
+		{% endfor %}
+	</map>
+	{% for aRow in aRows %}
+		<input type="checkbox" name="{{ aRow.name }}{{ aRow.title }}" id="answer{{ aRow.name}}{{ aRow.title }}" value="Y" {{ aRow.checkedState }} style="display:none;" />
+    {% endfor %}
+	<!-- end of answer -->
+	<script>
+		$('#map{{name}}').mapster({
+			singleSelect: false,
+			fillColor: '00ff00',
+			fillOpacity: 0.3,
+			stroke: true,
+			render_highlight: {
+				strokeWidth: 1
+			},
+			strokeColor: '000000',
+			onClick: function(event) {
+				var data = $(event.e.target).data();
+				var code = data.code;
+				console.log(code);
+				$('#' + code).prop('checked', event.selected);;
+			}
+		});
+		if($('#{{name}}').val()) {
+			$('area[data-code="' + $('#{{name}}').val() + '"]').mapster('select');
+		}
+	</script>
+</div>
