@@ -159,8 +159,8 @@ class Survey extends LSActiveRecord
 
 
     public $searched_value;
-    
-    public $showsurveypolicynotice = 0; 
+
+    public $showsurveypolicynotice = 0;
 
 
     private $sSurveyUrl;
@@ -504,7 +504,7 @@ class Survey extends LSActiveRecord
         $allowedAttributes = array('template', 'usecookie', 'allowprev',
             'showxquestions', 'shownoanswer', 'showprogress', 'questionindex',
             'usecaptcha', 'showgroupinfo', 'showqnumcode', 'navigationdelay',
-            'expires','stardate','admin','adminemail');
+            'expires','stardate','admin','adminemail','emailnotificationto','emailresponseto');
         foreach ($allowedAttributes as $attribute) {
             if (!is_null($event->get($attribute))) {
                 $this->{$attribute} = $event->get($attribute);
@@ -640,14 +640,25 @@ class Survey extends LSActiveRecord
             $ls->save();
             $attdescriptiondata = $fields;
         }
+        // Without token table : all extra attribute are only saved on $this->attributedescriptions
+        $allKnowAttributes = $attdescriptiondata;
+        // Without token table : all attribute $this->attributedescriptions AND real attribute. @see issue #13924
+        if($this->getHasTokensTable()){
+            $allKnowAttributes = array_intersect_key(
+                ( $attdescriptiondata + Token::model($this->sid)->getAttributes()),
+                Token::model($this->sid)->getAttributes()
+            );
+            // We remove deleted attribute even if deleted manually in DB
+        }
         $aCompleteData = array();
-        foreach ($attdescriptiondata as $sKey=>$aValues) {
-            if (!is_array($aValues)) {
-                $aValues = array();
-            }
-            if (preg_match("/^attribute_[0-9]{1,}$/", $sKey)) {
+        foreach ($allKnowAttributes as $sKey=>$aValues) {
+            if (preg_match("/^attribute_[0-9]{1,}$/", $sKey)) { // Select only extra attributes here
+                if (!is_array($aValues)) {
+                    $aValues = array();
+                }
+                // merge default with attributedescriptions
                 $aCompleteData[$sKey] = array_merge(array(
-                    'description' => '',
+                    'description' => $sKey,
                     'mandatory' => 'N',
                     'show_register' => 'N',
                     'cpdbmap' =>''
@@ -784,7 +795,7 @@ class Survey extends LSActiveRecord
                 if ($collapsed && $aEntry['showincollapse'] == 0 ) {
                     continue;
                 }
-                
+
                 //Skip menu if no permission
                 if ((!empty($aEntry['permission']) && !empty($aEntry['permission_grade'])
                     && !Permission::model()->hasSurveyPermission($this->sid, $aEntry['permission'], $aEntry['permission_grade']))
@@ -859,18 +870,18 @@ class Survey extends LSActiveRecord
         $criteria = new CDbCriteria;
         $criteria->condition = 'survey_id IS NULL AND parent_id IS NULL';
         $collapsed = $position==='collapsed';
-        
+
         if ($position != '' && !$collapsed) {
             $criteria->condition .= ' AND position=:position';
             $criteria->params = array(':position'=>$position);
         }
-            
+
         if ($collapsed) {
             $criteria->condition .= ' AND (position=:position OR showincollapse=1 )';
             $criteria->params = array(':position'=>$position);
             $collapsed = true;
         }
-        
+
         $oDefaultMenus = Surveymenu::model()->findAll($criteria);
         $aResultCollected = $this->_createSurveymenuArray($oDefaultMenus, $collapsed);
 
@@ -1431,6 +1442,15 @@ class Survey extends LSActiveRecord
     }
 
     /**
+     * decodes the attributedescriptions to be used anywhere necessary
+     * @return Array
+     */
+    public function getDecodedAttributedescriptions()
+    {
+        return decodeTokenAttributes($this->attributedescriptions);
+    }
+
+    /**
      * @return int
      */
     public function getCountTotalAnswers()
@@ -1893,10 +1913,10 @@ return $s->hasTokensTable; });
     }
 
     public static function replacePolicyLink($dataSecurityNoticeLabel, $surveyId) {
-        
+
         $STARTPOLICYLINK = "";
         $ENDPOLICYLINK = "";
-        
+
         if(self::model()->findByPk($surveyId)->showsurveypolicynotice == 2){
             $STARTPOLICYLINK = "<a href='#data-security-modal-".$surveyId."' data-toggle='collapse'>";
             $ENDPOLICYLINK = "</a>";
@@ -1904,16 +1924,16 @@ return $s->hasTokensTable; });
                 $dataSecurityNoticeLabel.= "<br/> {STARTPOLICYLINK}".gT("Show policy")."{ENDPOLICYLINK}";
             }
         }
-        
+
 
 
         $dataSecurityNoticeLabel =  preg_replace('/\{STARTPOLICYLINK\}/', $STARTPOLICYLINK ,$dataSecurityNoticeLabel);
-        
+
         $countEndLabel = 0;
         $dataSecurityNoticeLabel =  preg_replace('/\{ENDPOLICYLINK\}/', $ENDPOLICYLINK ,$dataSecurityNoticeLabel, -1, $countEndLabel);
         if($countEndLabel == 0){
             $dataSecurityNoticeLabel .= '</a>';
-        } 
+        }
 
         return $dataSecurityNoticeLabel;
 

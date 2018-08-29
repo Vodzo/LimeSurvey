@@ -110,14 +110,17 @@ var ThemeScripts = function(){
     var initLanguageChanger = function(selectorItem){
         $(selectorItem).on('change',function(e) {
             var lang = $(this).val();
+            var parser = document.createElement('a');
+            parser.href = window.location.href;
+            var url = parser.protocol+'//'+parser.host+parse.search;
             logObject.log(lang, 'changed');
             // If there are no form : we can't use it
             // No form, not targeturl : just see what happen
-            var target = window.location.href;
+            
             $('<form>', {
                 'class':'ls-js-hidden',
                 'html': '<input type="hidden" name="lang" value="' + lang + '" />',
-                'action': target,
+                'action' : url,
                 'method': 'get'
             }).appendTo('body').submit();
         });
@@ -240,7 +243,7 @@ var ThemeScripts = function(){
                 }
                 $(this).closest('.question-container').next('.question-container').find('input, textarea').first().focus();
             } else if (code==13 && e.ctrlKey == true) {
-                $('.ls-move-btn').trigger('click');
+                $('.action--ls-button-submit').trigger('click');
             }
         };
 
@@ -256,7 +259,7 @@ var ThemeScripts = function(){
                 }
                 $(this).closest('.question-container').next('.question-container').find('input, textarea').first().focus();
             } else if (code==13 && e.ctrlKey == true) {
-                $('.ls-move-btn').trigger('click');
+                $('.action--ls-button-submit').trigger('click');
             }
         };
 
